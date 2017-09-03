@@ -1,0 +1,20 @@
+CREATE TABLE users (
+  uid                BIGSERIAL PRIMARY KEY NOT NULL,
+  login              TEXT UNIQUE           NOT NULL,
+  email              TEXT,
+  password           TEXT,
+  activated_at       TIMESTAMP WITH TIME ZONE,
+  suspended_at       TIMESTAMP WITH TIME ZONE,
+  remember_token     TEXT,
+  login_count        INTEGER               NOT NULL,
+  failed_login_count INTEGER               NOT NULL,
+  locked_out_until   TIMESTAMP WITH TIME ZONE,
+  current_login_at   TIMESTAMP WITH TIME ZONE,
+  last_login_at      TIMESTAMP WITH TIME ZONE,
+  current_login_ip   TEXT,
+  last_login_ip      TEXT,
+  created_at         TIMESTAMP WITH TIME ZONE,
+  updated_at         TIMESTAMP WITH TIME ZONE,
+  reset_token        TEXT,
+  reset_requested_at TIMESTAMP WITH TIME ZONE
+);

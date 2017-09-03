@@ -64,10 +64,10 @@ app =
   makeSnaplet "app" "Accountli App" Nothing $ do
     h <- nestSnaplet "" heist $ heistInit "templates"
     d <- nestSnaplet "db" db pgsInit
+    m <- nestSnaplet "migration" migration $ initMigration d
     s <-
       nestSnaplet "sess" sess $ initCookieSessionManager "site_key.txt" "sess" Nothing (Just 3600)
     a <- nestSnaplet "auth" auth $ initPostgresAuth sess d
-    m <- nestSnaplet "migration" migration $ initMigration d
     addRoutes routes
     addAuthSplices h auth
     return $ App h d s a m
