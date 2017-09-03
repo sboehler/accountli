@@ -25,6 +25,7 @@ executable accountli
     FlexibleInstances
   other-modules:
     Accountli.Application,
+    Accountli.Snaplet.Migration,
     Site
   build-depends:
     bytestring,
@@ -32,6 +33,7 @@ executable accountli
     map-syntax,
     monad-control,
     mtl,
+    filepath,
     snap,
     snap-core,
     snap-server,

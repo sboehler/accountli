@@ -5,14 +5,9 @@ module Site
   ) where
 
 import Control.Applicative ((<|>))
-import Control.Monad.IO.Class (liftIO)
-import Control.Monad.Reader (runReaderT)
 import Data.ByteString (ByteString)
 import Data.Map.Syntax (( ## ))
 import qualified Data.Text as T
-import Database.PostgreSQL.Simple (Connection, withTransaction)
-import Database.PostgreSQL.Simple.Migration
-       (MigrationCommand(..), MigrationContext(..), runMigration)
 import qualified Heist.Interpreted as I
 import Snap.Core (Method(GET, POST), method, redirect)
 import Snap.Snaplet
@@ -22,12 +17,13 @@ import Snap.Snaplet.Auth
 import Snap.Snaplet.Auth.Backends.PostgresqlSimple
        (initPostgresAuth)
 import Snap.Snaplet.Heist (heistInit, heistLocal, render)
-import Snap.Snaplet.PostgresqlSimple (liftPG', pgsInit)
+import Snap.Snaplet.PostgresqlSimple (pgsInit)
 import Snap.Snaplet.Session.Backends.CookieSession
        (initCookieSessionManager)
 import Snap.Util.FileServe (serveDirectory)
 
 import Accountli.Application
+import Accountli.Snaplet.Migration (initMigration)
 
 -- | Render login form
 handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
@@ -62,24 +58,16 @@ routes =
   , ("", serveDirectory "static")
   ]
 
-migrate :: Connection -> IO ()
-migrate con =
-  let dir = "src/migrations"
-  in withTransaction con $
-     runMigration (MigrationContext MigrationInitialization True con) >>
-     runMigration (MigrationContext (MigrationDirectory dir) True con) >>
-     return ()
-
 -- | The application initializer.
 app :: SnapletInit App App
 app =
-  makeSnaplet "app" "An snaplet example application." Nothing $ do
+  makeSnaplet "app" "Accountli App" Nothing $ do
     h <- nestSnaplet "" heist $ heistInit "templates"
     d <- nestSnaplet "db" db pgsInit
     s <-
       nestSnaplet "sess" sess $ initCookieSessionManager "site_key.txt" "sess" Nothing (Just 3600)
     a <- nestSnaplet "auth" auth $ initPostgresAuth sess d
-    _ <- liftIO $ runReaderT (liftPG' migrate) d
+    m <- nestSnaplet "migration" migration $ initMigration d
     addRoutes routes
     addAuthSplices h auth
-    return $ App h d s a
+    return $ App h d s a m
