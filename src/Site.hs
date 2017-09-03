@@ -23,6 +23,7 @@ import Snap.Snaplet.Session.Backends.CookieSession
 import Snap.Util.FileServe (serveDirectory)
 
 import Accountli.Application
+       (App(..), auth, db, heist, migration, sess)
 import Accountli.Snaplet.Migration (initMigration)
 
 -- | Render login form
