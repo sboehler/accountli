@@ -1,7 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE FlexibleInstances #-}
-
-module Application where
+module Accountli.Application where
 
 import Control.Lens (makeLenses, set)
 import Control.Monad.Reader (local)

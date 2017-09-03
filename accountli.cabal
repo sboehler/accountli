@@ -1,32 +1,32 @@
-Name:                accountli
-Version:             0.1
-Synopsis:            Project Synopsis Here
-Description:         Project Description Here
-License:             AllRightsReserved
-Author:              Author
-Maintainer:          maintainer@example.com
-Stability:           Experimental
-Category:            Web
-Build-type:          Simple
-Cabal-version:       >=1.2
+name:                accountli
+version:             0.1
+synopsis:            Project Synopsis Here
+description:         Project Description Here
+license:             AllRightsReserved
+author:              Silvio Böhler
+maintainer:          sboehler@gmail.com
+stability:           Experimental
+category:            Web
+build-type:          Simple
+cabal-version:       >=1.10
 
-Flag development
-  Description: Whether to build the server in development (interpreted) mode
-  Default: False
-
-Flag old-base
+flag development
+  description: Whether to build the server in development (interpreted) mode
   default: False
-  manual: False
 
-Executable accountli
-  hs-source-dirs: src
-  main-is: Main.hs
+executable accountli
+  hs-source-dirs:
+    src
+  main-is:
+    Main.hs
   default-extensions:
-    OverloadedStrings
-
-  other-modules: Application, Site
-
-  Build-depends:
+    OverloadedStrings,
+    TemplateHaskell,
+    FlexibleInstances
+  other-modules:
+    Accountli.Application,
+    Site
+  build-depends:
     bytestring,
     heist,
     map-syntax,
@@ -41,31 +41,16 @@ Executable accountli
     postgresql-simple-migration,
     text,
     time,
-    xmlhtml
-
-  if flag(old-base)
-    build-depends:
-      base,
-      lens
-  else
-    build-depends:
-      base,
-      lens
+    xmlhtml,
+    base,
+    lens
 
   if flag(development)
+    -- note: doesn't work with stack
     build-depends:
       snap-loader-dynamic
     cpp-options: -DDEVELOPMENT
-    -- In development mode, speed is already going to suffer, so skip
-    -- the fancy optimization flags.  Additionally, disable all
-    -- warnings.  The hint library doesn't give an option to execute
-    -- compiled code when there were also warnings, so disabling
-    -- warnings allows quicker workflow.
     ghc-options: -threaded -w
   else
-    if impl(ghc >= 6.12.0)
-      ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
-                   -fno-warn-orphans -fno-warn-unused-do-bind
-    else
-      ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
-                   -fno-warn-orphans
+    ghc-options: -threaded -Wall -fwarn-tabs -funbox-strict-fields -O2
+                 -fno-warn-orphans -fno-warn-unused-do-bind

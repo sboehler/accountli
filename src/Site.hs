@@ -27,7 +27,7 @@ import Snap.Snaplet.Session.Backends.CookieSession
        (initCookieSessionManager)
 import Snap.Util.FileServe (serveDirectory)
 
-import Application
+import Accountli.Application
 
 -- | Render login form
 handleLogin :: Maybe T.Text -> Handler App (AuthManager App) ()
