@@ -1,6 +1,7 @@
 module Accountli.Application where
 
 import Accountli.Snaplet.Migration (Migration)
+import Accountli.Snaplet.Api (Api)
 import Control.Lens (makeLenses, set)
 import Control.Monad.Reader (local)
 import Control.Monad.State (get)
@@ -18,6 +19,7 @@ data App = App
   , _sess :: Snaplet SessionManager
   , _auth :: Snaplet (AuthManager App)
   , _migration :: Snaplet Migration
+  , _api :: Snaplet Api
   }
 
 makeLenses ''App

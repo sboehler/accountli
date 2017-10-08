@@ -22,10 +22,13 @@ executable accountli
   default-extensions:
     OverloadedStrings,
     TemplateHaskell,
+    DeriveGeneric,
     FlexibleInstances
   other-modules:
     Accountli.Application,
     Accountli.Snaplet.Migration,
+    Accountli.Snaplet.Api,
+    Accountli.Snap.Extras,
     Site
   build-depends:
     bytestring,
@@ -33,6 +36,7 @@ executable accountli
     map-syntax,
     monad-control,
     mtl,
+    aeson,
     filepath,
     snap,
     snap-core,

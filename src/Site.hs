@@ -23,7 +23,8 @@ import Snap.Snaplet.Session.Backends.CookieSession
 import Snap.Util.FileServe (serveDirectory)
 
 import Accountli.Application
-       (App(..), auth, db, heist, migration, sess)
+       (App(..), api, auth, db, heist, migration, sess)
+import qualified Accountli.Snaplet.Api as Api
 import Accountli.Snaplet.Migration (initMigration)
 
 -- | Render login form
@@ -69,6 +70,7 @@ app =
     s <-
       nestSnaplet "sess" sess $ initCookieSessionManager "site_key.txt" "sess" Nothing (Just 3600)
     a <- nestSnaplet "auth" auth $ initPostgresAuth sess d
+    ap <- nestSnaplet "api" api $ Api.init auth
     addRoutes routes
     addAuthSplices h auth
-    return $ App h d s a m
+    return $ App h d s a m ap
